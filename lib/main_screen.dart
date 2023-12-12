@@ -25,7 +25,9 @@ class _MainScreenState extends State<MainScreen> {
         title: Text(contrll.loading.value.toString()),
         actions: [
           
-          IconButton(onPressed: ()async{
+          IconButton(onPressed: (
+            
+          )async{
 contrll.refreshData();
           }, icon: Icon(Icons.add))
         ],
