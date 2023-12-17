@@ -19,6 +19,24 @@ class _PostProductState extends State<PostProduct> {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
   }
+
+      File? _pickedImage;
+
+  Future<void> _pickImageFromGallery() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      setState(() {
+        _pickedImage = File(pickedImage.path);
+      
+      });
+    }
+  }
+
+   var image;
+  var imagePicker;
+  var type;
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -28,28 +46,45 @@ class _PostProductState extends State<PostProduct> {
          body: Center(
           child: Column(
             children: [
-              MaterialButton(
-                color: Colors.blue,
-                child: Text(
-                  "Pick Image from Gallery",
-                  style: TextStyle(
-                      color: Colors.white70, fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  _handleURLButtonPress(context, ImageSourceType.gallery);
-                },
+     
+     
+
+                   Center(
+            child: GestureDetector(
+              onTap: () async {
+           _pickImageFromGallery();
+              },
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                    color: Colors.red[200]),
+                child: _pickedImage != null
+                    ? Image.file(
+                          _pickedImage!,
+                          width: 200.0,
+                          height: 200.0,
+                          fit: BoxFit.fitHeight,
+                        )
+                    : Container(
+                        decoration: BoxDecoration(
+                            color: Colors.red[200]),
+                        width: 200,
+                        height: 200,
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+
+
               ),
-              MaterialButton(
-                color: Colors.blue,
-                child: Text(
-                  "Pick Image from Camera",
-                  style: TextStyle(
-                      color: Colors.white70, fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  _handleURLButtonPress(context, ImageSourceType.camera);
-                },
-              ),
+            ),
+          ),
+
+          ElevatedButton(onPressed: ()async{
+       await     ProductServices.uploadImageToCloudinary(_pickedImage!.path);
+          }, child: Text('POST '))
             ],
           ),
         ));
